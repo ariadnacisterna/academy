@@ -7,17 +7,41 @@ if TYPE_CHECKING:
 
 class Subject:
     def __init__(self, code: str, name: str) -> None:
-        self.code = code
-        self.name = name
-        self.exams: list['Exam'] = []
-        self.careers: list['Career'] = []
-        self.teachers: list['Teacher'] = []
+        self._code = code
+        self._name = name
+        self._exams: list['Exam'] = []
+        self._careers: list['Career'] = []
+        self._teachers: list['Teacher'] = []
 
-    def add_teacher(self, teacher: 'Teacher') -> None:
-        self.teachers.append(teacher)
+    def _add_teacher(self, teacher: 'Teacher') -> None:
+        self._teachers.append(teacher)
 
-    def add_career(self, career: 'Career') -> None:
-        self.careers.append(career)
+    def _add_career(self, career: 'Career') -> None:
+        self._careers.append(career)
+    
+    @property
+    def name(self) -> str:
+        return self._name
+    
+    @name.setter
+    def name(self, value: str) -> None:
+        self._name = value
+    
+    @property
+    def code(self) -> str:
+        return self._code
+    
+    @code.setter
+    def code(self, value: str) -> None:
+        self._code = value
+    
+    @property
+    def careers(self) -> list['Career']:
+        return self._careers
+
+    @property
+    def teachers(self) -> list['Teacher']:
+        return self._teachers
 
     def __str__(self) -> str:
-        return f'{self.code}: {self.name}'
+        return f'{self._code}: {self._name}'

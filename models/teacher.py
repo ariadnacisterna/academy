@@ -7,11 +7,16 @@ if TYPE_CHECKING:
     from models.subject import Subject
 
 class Teacher(Person):
-    def __init__(
-            self, name: str, dob: date, file: int, city: str, 
-            street: str, number: int) -> None:
-        super().__init__(name, dob, file, city, street, number)
-        self.subjects: list['Subject'] = []
+    def __init__(self, name: str, dob: date, state: str, city: str, street: str, number: str, zip_code: str) -> None:
+        super().__init__(name, dob, state, city, street, number, zip_code)
+        self._subjects: list['Subject'] = []
 
-    def add_subject(self, subject: 'Subject') -> None:
-        self.subjects.append(subject)
+    def _add_subject(self, subject: 'Subject') -> None:
+        self._subjects.append(subject)
+    
+    @property
+    def subjects(self) -> list['Subject']:
+        return self._subjects
+    
+    def __str__(self) -> str:
+        return self._name
