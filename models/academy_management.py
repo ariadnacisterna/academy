@@ -5,6 +5,7 @@ from models.subject import Subject
 from models.exam import Exam
 from datetime import date
 
+
 class AcademyManagement:
     def __init__(self) -> None:
         self._students: list['Student'] = []

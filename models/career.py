@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from models.subject import Subject
+    from models.teacher import Teacher
 
 class Career:
     def __init__(self, code: str, name: str, subjects: list['Subject'] | None = None) -> None:

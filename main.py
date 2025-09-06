@@ -1,60 +1,59 @@
-from models.academy_management import AcademyManagement
+import os
+import sys
 from datetime import date
+from models.academy_management import AcademyManagement
+from tui.state import InitialMenu, Menu
+
+class AcademyApp:
+    def __init__(self):
+        self.menu: Menu = InitialMenu()
+        
+    def mainLoop(self):
+        try:
+            while True:
+                if os.name == 'nt':
+                    os.system('cls')
+                else:
+                    os.system('clear')
+
+                self.menu = self.menu.execute()
+        except KeyboardInterrupt:
+            sys.exit()
+
+def main() -> None:
+    try:
+        AcademyApp().mainLoop()
+    except AttributeError as e:
+        print(e)
+    except ValueError as e:
+        print(e)
+    except Exception as e:
+        print(e)
+        print('Ha ocurrido un error. Programa terminado.')
 
 if __name__ == "__main__":
-    academia = AcademyManagement()
+    academy = AcademyManagement()
 
-    sistemas = academia.create_career(code='sist', name='Ingeniería en Sistemas')
-    civil = academia.create_career(code="civil", name="Ingeniería Civil")
+    systems = academy.create_career(code='SIST001', name='Ingeniería en Sistemas')
+    civil = academy.create_career(code="CIV002", name="Ingeniería Civil")
     
-    programacion = academia.create_subject(code='prog', name='Programación')
-    matematica = academia.create_subject(code="mat", name="Análisis Matemático 1")
+    programming = academy.create_subject(code='prog', name='Programación')
+    mathematics = academy.create_subject(code="mat", name="Análisis Matemático 1")
     
-    academia.add_subject_to_career(subject=programacion, career=sistemas)
-    academia.add_subject_to_career(subject=matematica, career=sistemas)
-    academia.add_subject_to_career(subject=matematica, career=civil)
+    academy.add_subject_to_career(subject=programming, career=systems)
+    academy.add_subject_to_career(subject=mathematics, career=systems)
+    academy.add_subject_to_career(subject=mathematics, career=civil)
     
-    profesor_mat = academia.hire_teacher("Juan Pérez", date(1980, 5, 15), "Buenos Aires", "CABA", "Corrientes", "1234", "C1043AAZ") 
-    profesor_prog = academia.hire_teacher("José López", date(1970, 6, 15), "Tucumán", "TUC", "Córdoba", "1234", "C1043ABZ")
+    math_teacher = academy.hire_teacher(name="Juan Pérez", dob=date(1980, 5, 15), state="Buenos Aires", city="CABA", street="Corrientes", number="1234", zip_code="C1043AAZ") 
+    programming_teacher = academy.hire_teacher(name="José López", dob=date(1970, 6, 15), state="Tucumán", city="TUC", street="Córdoba", number="1234", zip_code="C1043ABZ")
     
-    academia.assign_subject_to_teacher(matematica, profesor_mat)
-    academia.assign_subject_to_teacher(programacion, profesor_prog)
+    academy.assign_subject_to_teacher(subject=mathematics, teacher=math_teacher)
+    academy.assign_subject_to_teacher(subject=programming, teacher=programming_teacher)
     
-    estudiante1 = academia.enroll_student("Ana García", date(2000, 8, 20), "Buenos Aires", "CABA", "Santa Fe", "5678", "C1425BGH", "EST001", sistemas)
-    estudiante2 = academia.enroll_student("Carlos Pérez", date(1999, 3, 15), "Córdoba", "CBA", "Belgrano", "890", "X5000ABC", "EST002", sistemas)
-    estudiante3 = academia.enroll_student("José Martínez", date(1998, 7, 5), "Mendoza", "MZA", "Las Heras", "123", "M5500GHI", "EST004", civil)
-    estudiante4 = academia.enroll_student("Laura Sánchez", date(2000, 11, 25), "Tucumán", "TUC", "24 de Septiembre", "789", "T4000JKL", "EST005", civil)
+    student1 = academy.enroll_student(name="Ana García", dob=date(2000, 8, 20), state="Buenos Aires", city="CABA", street="Santa Fe", number="5678", zip_code="C1425BGH", file_no="EST001", career=systems)
+    student2 = academy.enroll_student(name="Carlos Pérez", dob=date(1999, 3, 15), state="Córdoba", city="CBA", street="Belgrano", number="890", zip_code="X5000ABC", file_no="EST002", career=systems)
+    student3 = academy.enroll_student(name="José Martínez", dob=date(1998, 7, 5), state="Mendoza", city="MZA", street="Las Heras", number="123", zip_code="M5500GHI", file_no="EST004", career=civil)
+    student4 = academy.enroll_student(name="Laura Sánchez", dob=date(2000, 11, 25), state="Tucumán", city="TUC", street="24 de Septiembre", number="789", zip_code="T4000JKL", file_no="EST005", career=civil)
     
-    print("\n" + "="*20)
-    print("     FACULTAD")
-    print("="*20)
-
-    print(f"\nCARRERAS ({len(academia.careers)}):")
-    for carrera in academia.careers:
-        print(f"    {carrera}")
-        print(f"        Materias: {[str(s) for s in carrera.subjects]}")
-    
-    print(f"\nCódigo de {sistemas._name} antes: {sistemas.code}")
-    sistemas.code = "SIST001"
-    print(f"Código de {sistemas._name} después: {sistemas.code}")
-    
-    print(f"\nCódigo de {civil._name} antes: {civil.code}")
-    civil.code = "CIV002"
-    print(f"Código de {civil._name} después: {civil.code}")
-
-    print(f"\nMATERIAS ({len(academia.subjects)}):")
-    for materia in academia.subjects:
-        print(f"    {materia}")
-        print(f"        En carreras: {[str(c) for c in materia.careers]}")
-        print(f"        Profesores: {[str(t) for t in materia.teachers]}")
-
-    print(f"\nPROFESORES ({len(academia.teachers)}):")
-    for profesor in academia.teachers:
-        print(f"    {profesor._name}")
-        print(f"        Enseña: {[str(s) for s in profesor.subjects]}")
-
-    print(f"\nESTUDIANTES ({len(academia.students)}):")
-    for estudiante in academia.students:
-        print(f"    {estudiante._name} (Legajo: {estudiante.file_no})")
-        print(f"        Edad: {estudiante.age}")
-        print(f"        Carrera: {estudiante.career}")
+    Menu.academy_active = academy
+    main()
